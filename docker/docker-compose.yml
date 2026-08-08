@@ -1,0 +1,20 @@
+version: '3'
+services: # 服务 (service) 一个应用的容器，实际上可以包括若干运行相同镜像的容器实例
+  zookeeper: # 项目 (project) 由一组关联的应用容器组成的一个完整业务单元，在 docker-compose.yml 文件中定义
+    image: wurstmeister/zookeeper:latest
+    container_name: zookeeper
+    restart: always
+    ports:
+      - 2181:2181
+
+  kafka:
+    image: wurstmeister/kafka:latest
+    container_name: kafka
+    ports:
+      - 9092:9092
+    environment:
+      KAFKA_ADVERTISED_HOST_NAME: kafka
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+    restart: always
+    volumes:
+      - ./docker.sock:/var/run/docker.sock

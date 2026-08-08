@@ -1,0 +1,21 @@
+@startuml
+!pragma layout smetana
+
+participant "MOBILE" as p1
+participant "Api1" as p2
+participant "Api2" as p3
+participant "DB" as p4
+
+p1 -> p3: Get /movemoney/verify
+note right
+  the <U+0025>autonumber<U+0025> works everywhere.
+  Here, its value is ** %autonumber% **
+end note
+p3 -> p4: accountList Post /movemoney/verify2
+p3 <-- p4: verify result payeeIndex
+p3 -> p1: verify result payeeIndex
+
+alt if the verification result is negative
+    p1 <-[#red] p2: failed result and will not proceed
+end
+@enduml
