@@ -37,3 +37,11 @@ from sc
 where sc.sno in 
 (select sc.sno from sc where sc.score < 60 group by sc.sno having count(1) >= 2)
 group by sc.sno;
+
+-- 深度分页优化
+
+-- 慢SQL（深分页）
+SELECT * FROM orders ORDER BY id LIMIT 1000000, 20;
+
+-- 优化后
+SELECT * FROM orders WHERE id > 1000000 ORDER BY id LIMIT 20;
