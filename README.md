@@ -8,9 +8,9 @@
 | [framework](framework/) | Spring 全家桶、MyBatis、Liquibase |
 | [middleware](middleware/) | Kafka、RabbitMQ、ElasticSearch |
 | [database](database/) | MySQL、Redis + 练习题（dql.sql / import/） |
-| [devops](devops/) | Docker、K8s、Nginx、Linux、Git、Maven、AWS |
+| [devops](devops/) | Docker、K8s、Nginx、Linux、Git、Maven、AWS、network（HTTPS） |
 | [testing](testing/) | JMeter 压测（peak / capacity / soak） |
-| [design](design/) | 系统设计、HTTPS、PlantUML 画图 |
+| [design](design/) | 系统设计、PlantUML 画图 |
 | [ai](ai/) | LangChain 与 AI 应用 |
 
 格式惯例：一篇文章 / 一个主题目录，里面的 `.sql/.xml/.conf/.puml/.sh` 是可直接复用的真实文件。
