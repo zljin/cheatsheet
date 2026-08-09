@@ -498,9 +498,14 @@ AQS 是 JUC（java.util.concurrent）包的基石，提供了一套通用的同�
 ### 10.2 CAS（Compare And Swap）
 乐观锁的核心操作，包含三个操作数：内存值 V、期望原值 A、新值 B。仅当 V == A 时，才将 V 更新为 B。CAS 可解决部分并发问题，但存在 ABA 问题，可通过版本号（`AtomicStampedReference`）解决。
 
-### 10.3 基于 AQS 实现互斥锁
+### 10.3 基于 AQS 写同步器（了解模式即可）
+
+ReentrantLock / Semaphore / CountDownLatch 底层都是继承 AQS：AQS 管排队、阻塞、唤醒的通用逻辑，子类只需实现模板方法：
+- **独占锁**（如互斥锁）：`tryAcquire` / `tryRelease`
+- **共享锁**（如信号量）：`tryAcquireShared` / `tryReleaseShared`
 
 ```java
+// 最小互斥锁示例，理解"继承 AQS 覆写钩子方法"即可
 public class SimpleMutex extends AbstractQueuedSynchronizer {
     @Override
     protected boolean tryAcquire(int arg) {
@@ -510,7 +515,6 @@ public class SimpleMutex extends AbstractQueuedSynchronizer {
         }
         return false;
     }
-
     @Override
     protected boolean tryRelease(int arg) {
         if (getState() == 0) throw new IllegalMonitorStateException();
@@ -518,44 +522,12 @@ public class SimpleMutex extends AbstractQueuedSynchronizer {
         setState(0);
         return true;
     }
-
     public void lock()   { acquire(1); }
     public void unlock() { release(1); }
 }
 ```
 
-### 10.4 基于 AQS 实现简单信号量
-
-```java
-public class SimpleSemaphore extends AbstractQueuedSynchronizer {
-    public SimpleSemaphore(int permits) {
-        setState(permits);
-    }
-
-    @Override
-    protected int tryAcquireShared(int acquires) {
-        for (;;) {
-            int available = getState();
-            int remaining = available - acquires;
-            if (remaining < 0 || compareAndSetState(available, remaining))
-                return remaining;
-        }
-    }
-
-    @Override
-    protected boolean tryReleaseShared(int releases) {
-        for (;;) {
-            int current = getState();
-            int next = current + releases;
-            if (compareAndSetState(current, next))
-                return true;
-        }
-    }
-
-    public void acquire() { acquireShared(1); }
-    public void release() { releaseShared(1); }
-}
-```
+> 业务代码里用现成的 `ReentrantLock`/`Semaphore` 就够，自己写同步器属于框架层开发，知道原理即可。
 
 ---
 
